@@ -13,10 +13,12 @@ REQUEST_HEADERS = {
 ap = argparse.ArgumentParser()
 ap.add_argument('--year', required=True, help='which year of wwdc')
 ap.add_argument('--path', required=False, help='video save path.default is current.')
+ap.add_argument('--quality', required=False, help='video quality support HD and SD.default is SD.', default="SD")
 
 args = vars(ap.parse_args())
 wwdc_year = args['year']
 save_path = args['path']
+video_quality = args['quality']
 
 
 def format_wwdc_year(wwdc_year):
@@ -95,14 +97,26 @@ def download_file(file_url):
     print("\n download end.", file_name)
 
 
-# this is for real!
-# for url in get_all_video_urls():
-#     hd, sd, other = get_video_download_urls(url)
-#     if not hd:
-#         download_file(hd[0])
+def download_videos(video_urls):
+    for url in video_urls:
+        download_file(url)
+
+
+def download_all_sessions():
+    for wwdc_url in get_all_video_urls(get_wwdc_url(wwdc_year)):
+        hd_videos, sd_videos, other_urls = get_video_download_urls(wwdc_url)
+        if hd_videos is not None and video_quality.upper() == "HD":
+            download_videos(hd_videos)
+        elif sd_videos is not None and video_quality.upper() == "SD":
+            download_videos(sd_videos)
+        else:
+            print(f"No found match video quality {video_quality}! ")
+
+
+download_all_sessions()
 
 # for test: only download first sd video
-url = get_all_video_urls(get_wwdc_url(wwdc_year))[0]
-hd, sd, other = get_video_download_urls(url)
-if sd:
-    download_file(sd[0])
+# url = get_all_video_urls(get_wwdc_url(wwdc_year))[0]
+# hd, sd, other = get_video_download_urls(url)
+# if sd:
+#     download_file(sd[0])
