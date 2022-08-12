@@ -2,13 +2,30 @@ import os.path
 import sys
 import requests
 from bs4 import BeautifulSoup
+import argparse
 
-WWDC_URL = "https://developer.apple.com/videos/wwdc2022/"
 DOMAIN_URL = "https://developer.apple.com"
 
 REQUEST_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) '
                   'Version/14.1.2 Safari/605.1.15'}
+
+ap = argparse.ArgumentParser()
+ap.add_argument('--year', required=True, help='which year of wwdc')
+ap.add_argument('--path', required=False, help='video save path.default is current.')
+
+args = vars(ap.parse_args())
+wwdc_year = args['year']
+save_path = args['path']
+
+
+def format_wwdc_year(wwdc_year):
+    return f"wwdc{wwdc_year}"
+
+
+def get_wwdc_url(wwdc_year):
+    year = format_wwdc_year(wwdc_year)
+    return f"https://developer.apple.com/videos/{year}/"
 
 
 def get_all_video_urls(wwdc_sessions_url):
@@ -47,7 +64,6 @@ def get_video_download_urls(session_detail_url):
 
 
 def download_file(file_url):
-
     # fixme: need a nice name
     file_name = os.path.basename(file_url).split("?")[0]
 
@@ -57,7 +73,8 @@ def download_file(file_url):
 
     print(f"download start. {file_name}")
 
-    with open(file_name, "wb") as f:
+    file_path = save_path + file_name if not save_path is None else file_name
+    with open(file_path, "wb") as f:
         print("Downloading %s" % file_name)
         response = requests.get(file_url, stream=True)
         total_length = response.headers.get('content-length')
@@ -85,7 +102,7 @@ def download_file(file_url):
 #         download_file(hd[0])
 
 # for test: only download first sd video
-url = get_all_video_urls(WWDC_URL)[0]
+url = get_all_video_urls(get_wwdc_url(wwdc_year))[0]
 hd, sd, other = get_video_download_urls(url)
 if sd:
     download_file(sd[0])
