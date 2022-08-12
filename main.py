@@ -1,3 +1,4 @@
+import os.path
 import sys
 import requests
 from bs4 import BeautifulSoup
@@ -45,14 +46,20 @@ def get_video_download_urls(session_detail_url):
     return hd_video_urls, sk_video_urls, other_urls
 
 
-def download_file(url):
+def download_file(file_url):
+
     # fixme: need a nice name
-    file_name = "test.mp4"
-    print("download start.", file_name)
+    file_name = os.path.basename(file_url).split("?")[0]
+
+    if os.path.exists(file_name):
+        print("file exists. skip download~")
+        return
+
+    print(f"download start. {file_name}")
 
     with open(file_name, "wb") as f:
         print("Downloading %s" % file_name)
-        response = requests.get(url, stream=True)
+        response = requests.get(file_url, stream=True)
         total_length = response.headers.get('content-length')
 
         if total_length is None:  # no content length header
