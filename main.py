@@ -12,15 +12,17 @@ REQUEST_HEADERS = {
                   'Version/14.1.2 Safari/605.1.15'}
 
 ap = argparse.ArgumentParser()
-ap.add_argument('--year', required=True, help='which year of wwdc')
-ap.add_argument('--path', required=False, help='video save path.default is current.')
-ap.add_argument('--quality', required=False, help='video quality support HD and SD.default is SD.', default="SD")
+ap.add_argument('--year', required=True, help='Determine which year of wwdc')
+ap.add_argument('--path', required=False, help='Video save path.default is current.')
+ap.add_argument('--quality', required=False, help='Video quality support HD and SD. Default is SD.', default="SD")
+ap.add_argument('--queue_count', required=False, help='Video download queue count. Default is 3', type=int,
+                default=3)
 
 args = vars(ap.parse_args())
 wwdc_year = args['year']
 save_path = args['path']
 video_quality = args['quality']
-
+queue_count = args['queue_count']
 
 def format_wwdc_year(wwdc_year):
     return f"wwdc{wwdc_year}"
@@ -105,7 +107,7 @@ def download_video(session_url):
 
 def download_all_sessions():
     session_urls = get_all_video_urls(get_wwdc_url(wwdc_year))
-    with Pool(processes=4) as pool:
+    with Pool(processes=queue_count) as pool:
         pool.map(download_video, session_urls)
 
 
