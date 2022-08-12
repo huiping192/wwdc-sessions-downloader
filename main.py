@@ -1,31 +1,28 @@
-import os
 import sys
-
 import requests
 from bs4 import BeautifulSoup
-import urllib.request
 
-wwdc2022_url = "https://developer.apple.com/wwdc22/sessions/"
-# todo: code
-domain_url = "https://developer.apple.com"
+WWDC_URL = "https://developer.apple.com/videos/wwdc2022/"
+DOMAIN_URL = "https://developer.apple.com"
 
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15'}
+REQUEST_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) '
+                  'Version/14.1.2 Safari/605.1.15'}
 
 
-def get_all_video_urls():
-    ret = requests.get(wwdc2022_url, headers)
+def get_all_video_urls(wwdc_sessions_url):
+    ret = requests.get(wwdc_sessions_url, REQUEST_HEADERS)
     soup = BeautifulSoup(ret.text, 'html.parser')
-    links = soup.find_all(class_="icon icon-after icon-playcircle")
-    return list(map(lambda link: domain_url + link.get('href'), links))
+    links = soup.find_all(class_="video-image-link")
+    return list(map(lambda link: DOMAIN_URL + link.get('href'), links))
 
 
 def get_video_download_urls(session_detail_url):
-    ret = requests.get(session_detail_url, headers)
+    ret = requests.get(session_detail_url, REQUEST_HEADERS)
     soup = BeautifulSoup(ret.text, 'html.parser')
     links = soup.select("li.download > ul > li > a")
     if not links:
-        print("no found donwload url at:", session_detail_url)
+        print("no found download url at:", session_detail_url)
         return None, None, None
 
     # hd, sd and other download urls
@@ -74,13 +71,14 @@ def download_file(url):
     print("\n download end.", file_name)
 
 
+# this is for real!
 # for url in get_all_video_urls():
 #     hd, sd, other = get_video_download_urls(url)
 #     if not hd:
 #         download_file(hd[0])
 
-
-url = get_all_video_urls()[0]
+# for test: only download first sd video
+url = get_all_video_urls(WWDC_URL)[0]
 hd, sd, other = get_video_download_urls(url)
-if hd:
+if sd:
     download_file(sd[0])
