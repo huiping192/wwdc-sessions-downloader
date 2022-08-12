@@ -110,7 +110,7 @@ def download_all_sessions():
         elif sd_videos is not None and video_quality.upper() == "SD":
             download_videos(sd_videos)
         else:
-            print(f"No found match video quality {video_quality}! ")
+            print(f"No found match {video_quality} video! ")
 
 
 download_all_sessions()
