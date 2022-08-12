@@ -1,4 +1,5 @@
 import os
+import sys
 
 import requests
 from bs4 import BeautifulSoup
@@ -25,7 +26,7 @@ def get_video_download_urls(session_detail_url):
     links = soup.select("li.download > ul > li > a")
     if not links:
         print("no found donwload url at:", session_detail_url)
-        return None,None,None
+        return None, None, None
 
     # hd, sd and other download urls
     hd_video_urls = []
@@ -49,24 +50,34 @@ def get_video_download_urls(session_detail_url):
 
 def download_file(url):
     # fixme: need a nice name
-    filename = "test.mp4"
-    print("download start.", filename)
+    file_name = "test.mp4"
+    print("download start.", file_name)
 
-    r = requests.get(url, stream=True)
-    with open(filename, 'wb') as f:
-        for chunk in r.iter_content(chunk_size=1024):
-            if chunk:
-                f.write(chunk)
-                f.flush()
+    with open(file_name, "wb") as f:
+        print("Downloading %s" % file_name)
+        response = requests.get(url, stream=True)
+        total_length = response.headers.get('content-length')
 
-    print("download end.", filename)
+        if total_length is None:  # no content length header
+            f.write(response.content)
+        else:
+            dl = 0
+            total_length = int(total_length)
+            for data in response.iter_content(chunk_size=4096):
+                dl += len(data)
+                f.write(data)
+                done = int(50 * dl / total_length)
+                percent = int(dl * 100 / total_length)
+                sys.stdout.write("\r[%s%s]%d%%" % ('=' * done, ' ' * (50 - done), percent))
+                sys.stdout.flush()
+
+    print("\n download end.", file_name)
 
 
 # for url in get_all_video_urls():
 #     hd, sd, other = get_video_download_urls(url)
 #     if not hd:
 #         download_file(hd[0])
-
 
 
 url = get_all_video_urls()[0]
