@@ -3,6 +3,7 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 import argparse
+from multiprocessing import Pool
 
 DOMAIN_URL = "https://developer.apple.com"
 
@@ -43,26 +44,21 @@ def get_video_download_urls(session_detail_url):
     links = soup.select("li.download > ul > li > a")
     if not links:
         print("no found download url at:", session_detail_url)
-        return None, None, None
+        return None, None
 
-    # hd, sd and other download urls
-    hd_video_urls = []
-    sk_video_urls = []
-    other_urls = []
+    # hd, sd download url
+    hd_video_url, sk_video_url = None, None
 
     for link in links:
         if link.text == "HD Video":
-            hd_video_urls.append(link.get("href"))
+            hd_video_url = link.get("href")
         elif link.text == "SD Video":
-            sk_video_urls.append(link.get("href"))
-        else:
-            other_urls.append(link.get("href"))
+            sk_video_url = link.get("href")
 
-    print("hd", hd_video_urls)
-    print("sd", sk_video_urls)
-    print("other", other_urls)
+    print("hd", hd_video_url)
+    print("sd", sk_video_url)
 
-    return hd_video_urls, sk_video_urls, other_urls
+    return hd_video_url, sk_video_url
 
 
 def download_file(file_url):
@@ -75,7 +71,7 @@ def download_file(file_url):
 
     print(f"download start. {file_name}")
 
-    file_path = save_path + file_name if not save_path is None else file_name
+    file_path = save_path + file_name if save_path is not None else file_name
     with open(file_path, "wb") as f:
         print("Downloading %s" % file_name)
         response = requests.get(file_url, stream=True)
@@ -97,23 +93,24 @@ def download_file(file_url):
     print("\n download end.", file_name)
 
 
-def download_videos(video_urls):
-    for url in video_urls:
-        download_file(url)
+def download_video(session_url):
+    hd_video, sd_video = get_video_download_urls(session_url)
+    if hd_video is not None and video_quality.upper() == "HD":
+        download_file(hd_video)
+    elif sd_video is not None and video_quality.upper() == "SD":
+        download_file(sd_video)
+    else:
+        print(f"No found match {video_quality} video! ")
 
 
 def download_all_sessions():
-    for wwdc_url in get_all_video_urls(get_wwdc_url(wwdc_year)):
-        hd_videos, sd_videos, other_urls = get_video_download_urls(wwdc_url)
-        if hd_videos is not None and video_quality.upper() == "HD":
-            download_videos(hd_videos)
-        elif sd_videos is not None and video_quality.upper() == "SD":
-            download_videos(sd_videos)
-        else:
-            print(f"No found match {video_quality} video! ")
+    session_urls = get_all_video_urls(get_wwdc_url(wwdc_year))
+    with Pool(processes=4) as pool:
+        pool.map(download_video, session_urls)
 
 
-download_all_sessions()
+if __name__ == "__main__":
+    download_all_sessions()
 
 # for test: only download first sd video
 # url = get_all_video_urls(get_wwdc_url(wwdc_year))[0]
