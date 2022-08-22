@@ -29,15 +29,10 @@ python3 main.py ---year=2022 --quality=hd
 
 
 
-```shell
-python3 main.py ---year=2022 --quality=hd
-```
-
-
 ## Author
 
 huiping_guo, huiping192@gmail.com
 
 ## License
 
-VideoGiftPlayer is available under the MIT license. See the LICENSE file for more info.
+wwdc-sessions-downloader is available under the MIT license. See the LICENSE file for more info.
