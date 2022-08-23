@@ -12,12 +12,12 @@ REQUEST_HEADERS = {
                   'Version/14.1.2 Safari/605.1.15'}
 
 ap = argparse.ArgumentParser()
-ap.add_argument('--year', required=True, help='Determine which year of wwdc')
-ap.add_argument('--session', required=False, help='Determine which session to download. Download all sessions if not '
+ap.add_argument('-y', '--year', required=True, help='Determine which year of wwdc')
+ap.add_argument('-s', '--session', required=False, help='Determine which session to download. Download all sessions if not '
                                                   'specified.')
-ap.add_argument('--path', required=False, help='Video save path.default is current.')
-ap.add_argument('--quality', required=False, help='Video quality support HD and SD. Default is SD.', default="SD")
-ap.add_argument('--queue_count', required=False, help='Video download queue count. Default is 3', type=int,
+ap.add_argument('-p', '--path', required=False, help='Video save path.default is current.')
+ap.add_argument('-q', '--quality', required=False, help='Video quality support HD and SD. Default is SD.', default="SD")
+ap.add_argument('-pc', '--queue_count', required=False, help='Video download queue count. Default is 3', type=int,
                 default=3)
 ap.add_argument('--pdf', help='Should download pdf if exists.', action='store_true')
 
