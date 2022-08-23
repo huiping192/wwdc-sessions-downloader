@@ -13,6 +13,8 @@ REQUEST_HEADERS = {
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--year', required=True, help='Determine which year of wwdc')
+ap.add_argument('--session', required=False, help='Determine which session to download. Download all sessions if not '
+                                                  'specified.')
 ap.add_argument('--path', required=False, help='Video save path.default is current.')
 ap.add_argument('--quality', required=False, help='Video quality support HD and SD. Default is SD.', default="SD")
 ap.add_argument('--queue_count', required=False, help='Video download queue count. Default is 3', type=int,
@@ -21,6 +23,7 @@ ap.add_argument('--pdf', help='Should download pdf if exists.', action='store_tr
 
 args = vars(ap.parse_args())
 wwdc_year = args['year']
+video_session_id = args['session']
 save_path = args['path']
 video_quality = args['quality']
 queue_count = args['queue_count']
@@ -128,5 +131,14 @@ def download_all_sessions():
         pool.map(download_video, session_urls)
 
 
+def download_session(session_id):
+    year = format_wwdc_year(wwdc_year)
+    url = f"https://developer.apple.com/videos/play/{year}/{session_id}/"
+    download_video(url)
+
+
 if __name__ == "__main__":
-    download_all_sessions()
+    if video_session_id:
+        download_session(video_session_id)
+    else:
+        download_all_sessions()
