@@ -17,12 +17,15 @@ ap.add_argument('--path', required=False, help='Video save path.default is curre
 ap.add_argument('--quality', required=False, help='Video quality support HD and SD. Default is SD.', default="SD")
 ap.add_argument('--queue_count', required=False, help='Video download queue count. Default is 3', type=int,
                 default=3)
+ap.add_argument('--pdf', help='Should download pdf if exists.', action='store_true')
 
 args = vars(ap.parse_args())
 wwdc_year = args['year']
 save_path = args['path']
 video_quality = args['quality']
 queue_count = args['queue_count']
+need_pdf = args['pdf']
+
 
 def format_wwdc_year(wwdc_year):
     return f"wwdc{wwdc_year}"
@@ -46,10 +49,10 @@ def get_video_download_urls(session_detail_url):
     links = soup.select("li.download > ul > li > a")
     if not links:
         print("no found download url at:", session_detail_url)
-        return None, None
+        return None, None, None
 
     # hd, sd download url
-    hd_video_url, sk_video_url = None, None
+    hd_video_url, sk_video_url, pdf_url = None, None, None
 
     for link in links:
         if link.text == "HD Video":
@@ -57,10 +60,17 @@ def get_video_download_urls(session_detail_url):
         elif link.text == "SD Video":
             sk_video_url = link.get("href")
 
+    pdf_links = soup.select("li.download > a")
+    for link in pdf_links:
+        if link.text == "Presentation Slides (PDF)":
+            pdf_url = link.get("href")
+            break
+
     print("hd", hd_video_url)
     print("sd", sk_video_url)
+    print("pdf", pdf_url)
 
-    return hd_video_url, sk_video_url
+    return hd_video_url, sk_video_url, pdf_url
 
 
 def download_file(file_url):
@@ -96,13 +106,16 @@ def download_file(file_url):
 
 
 def download_video(session_url):
-    hd_video, sd_video = get_video_download_urls(session_url)
+    hd_video, sd_video, pdf = get_video_download_urls(session_url)
     if hd_video is not None and video_quality.upper() == "HD":
         download_file(hd_video)
     elif sd_video is not None and video_quality.upper() == "SD":
         download_file(sd_video)
     else:
         print(f"No found match {video_quality} video! ")
+
+    if pdf is not None and need_pdf:
+        download_file(pdf)
 
 
 def download_all_sessions():
@@ -113,9 +126,3 @@ def download_all_sessions():
 
 if __name__ == "__main__":
     download_all_sessions()
-
-# for test: only download first sd video
-# url = get_all_video_urls(get_wwdc_url(wwdc_year))[0]
-# hd, sd, other = get_video_download_urls(url)
-# if sd:
-#     download_file(sd[0])
