@@ -10,6 +10,23 @@ For Apple WWDC session videos download.
 - [x]  download specified session video
 
 
+## Usage
+
+Clone the project.
+```
+git clone https://github.com/huping192/wwdc-sessions-downloader
+```
+
+Install packages.
+```
+python3 -m pip install -r requirements.txt --user
+```
+
+Run python script
+```
+python3 main.py --year=2022
+```
+
 ## Example
 
 ### download all wwdc session videos.
