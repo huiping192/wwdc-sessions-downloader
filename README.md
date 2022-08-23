@@ -6,7 +6,7 @@ For Apple WWDC session videos download.
 
 - [x]  download all session videos of specified year
 - [x]  chose HD or SD video quality
-- [ ]  download pdf file if exits
+- [x]  download pdf file if exits
 - [ ]  download specified session video
 
 
@@ -15,7 +15,14 @@ For Apple WWDC session videos download.
 download all 2022 wwdc session videos in hd quality.
 
 ```shell
-python3 main.py ---year=2022 --quality=hd
+# download wwdc 2022 all hd videos not pdfs
+python3 main.py ---year=2022
+
+# download wwdc 2022 all hd videos not pdfs
+python3 main.py ---year=2022 --quality=sd
+
+# download wwdc 2015 all sd videos with pdf
+python3 main.py ---year=2015 --quality=sd --pdf
 ```
 
 ## Params
@@ -26,6 +33,7 @@ python3 main.py ---year=2022 --quality=hd
 | path  | string  | ideo save path.default is current.  |
 | quality  | {hd,sd}  | Video quality support HD and SD. Default is SD.  |
 | queue_count  | int  | Video download queue count. Default is 3  |
+| pdf  | --  | Should download pdf if exists.  |
 
 
 
