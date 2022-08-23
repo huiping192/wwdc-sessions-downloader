@@ -76,14 +76,18 @@ def get_video_download_urls(session_detail_url):
 def download_file(file_url):
     # fixme: need a nice name
     file_name = os.path.basename(file_url).split("?")[0]
+    year = format_wwdc_year(wwdc_year)
+    file_dic = save_path + year + "/" if save_path is not None else year + "/"
+    file_path = file_dic + file_name
 
-    if os.path.exists(file_name):
+    if os.path.exists(file_path):
         print("file exists. skip download~")
         return
+    if not os.path.exists(file_dic):
+        os.makedirs(file_dic, exist_ok=True)
 
     print(f"download start. {file_name}")
 
-    file_path = save_path + file_name if save_path is not None else file_name
     with open(file_path, "wb") as f:
         print("Downloading %s" % file_name)
         response = requests.get(file_url, stream=True)
