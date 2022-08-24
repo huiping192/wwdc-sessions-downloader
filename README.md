@@ -63,12 +63,12 @@ python3 main.py -y=2015 -s=508 --pdf
 
 | param | short param | value | desc |
 | ------------- | ------------- | ------------- | ------------- |
-| year  | y  | int  | Determine which year of wwdc  |
-| session  | s  | string  | Determine which session to download. Download all sessions if not specified. |
-| path  | p  | string  | video save path.default is current dic.  |
-| quality  | q  | {hd,sd}  | Video quality support HD and SD. Default is SD.  |
-| queue_count  | qc  | int  | Video download queue count. Default is 3  |
-| pdf  | pdf  | --  | Should download pdf if exists.  |
+| --year  | -y  | int  | Determine which year of wwdc  |
+| --session  | -s  | string  | Determine which session to download. Download all sessions if not specified. |
+| --path  | -p  | string  | video save path.default is current dic.  |
+| --quality  | -q  | {hd,sd}  | Video quality support HD and SD. Default is SD.  |
+| --queue_count  | -qc  | int  | Video download queue count. Default is 3  |
+| --pdf  | --pdf  | --  | Should download pdf if exists.  |
 
 
 
