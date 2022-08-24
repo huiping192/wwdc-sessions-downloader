@@ -32,7 +32,7 @@ python3 main.py --year=2022
 ### download all wwdc session videos.
 
 ```shell
-# download wwdc 2022 all hd videos not pdfs
+# download wwdc 2022 all sd videos not pdfs
 python3 main.py --year=2022
 python3 main.py --y=2022
 
@@ -51,7 +51,7 @@ python3 main.py -y=2015 --q=sd --pdf
 ### download specified wwdc session video.
 
 ```shell
-# download wwdc 2015 session 508 hd video
+# download wwdc 2015 session 508 sd video
 python3 main.py --year=2015 --session=508
 python3 main.py -y=2015 -s=508
 
