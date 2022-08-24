@@ -33,16 +33,13 @@ python3 main.py --year=2022
 
 ```shell
 # download wwdc 2022 all sd videos not pdfs
-python3 main.py --year=2022
 python3 main.py --y=2022
 
 
 # download wwdc 2022 all hd videos not pdfs
-python3 main.py --year=2022 --quality=hd
 python3 main.py -y=2022 -q=hd
 
 # download wwdc 2015 all sd videos with pdf
-python3 main.py --year=2015 --quality=sd --pdf
 python3 main.py -y=2015 --q=sd --pdf
 
 ```
@@ -52,15 +49,12 @@ python3 main.py -y=2015 --q=sd --pdf
 
 ```shell
 # download wwdc 2015 session 508 sd video
-python3 main.py --year=2015 --session=508
 python3 main.py -y=2015 -s=508
 
 # download wwdc 2015 session 508 hd video
-python3 main.py --year=2015 --session=508 --quality=hd
 python3 main.py -y=2015 -s=508 -q=hd
 
 # download wwdc 2015 session 508 sd video with pdf
-python3 main.py ---year=2015 --session=508 --pdf
 python3 main.py -y=2015 -s=508 --pdf
 
 ```
